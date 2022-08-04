@@ -1,55 +1,202 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
 import {
   InstaAutomation,
-  AdminChanged,
-  BeaconUpgraded,
-  Upgraded
-} from "../generated/InstaAutomation/InstaAutomation"
-import { ExampleEntity } from "../generated/schema"
+  LogCancelledAutomation,
+  LogExecutedAutomation,
+  LogExecutedAutomationParams,
+  LogFlippedExecutors,
+  LogSubmittedAutomation,
+  LogSystemCancelledAutomation,
+} from "../generated/InstaIndex/InstaAutomation";
+import {
+  ExecuteData,
+  ExecuteMetaData,
+  ExecutionParams,
+  Spell,
+  Swap,
+  Account,
+  SubmitData,
+  CancelData,
+  SystemCancelData,
+  Executors
+} from "../generated/schema";
+import {
+  createOrLoadCancelData,
+  createOrLoadDsa,
+  createOrLoadExecute,
+  createOrLoadExecuteMetaData,
+  createOrLoadExecutionParams,
+  createOrLoadSpell,
+  createOrLoadSubmit,
+  createOrLoadSwap,
+  createOrLoadSystemCancelData,
+} from "./insta-index";
 
-export function handleAdminChanged(event: AdminChanged): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+export function handleLogSubmitAutomation(event: LogSubmittedAutomation): void {
+  let dsaId = event.params.user.toHexString() + "#" + event.params.id.toString();
+  let eventId =
+    event.transaction.hash.toHexString() + event.logIndex.toString();
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  log.info("transaction hash: {} and from: {} ", [
+    event.transaction.hash.toHexString(),
+    event.transaction.from.toHexString(),
+  ]);
+  log.info("ID: {}", [dsaId]);
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
+  let dsa = createOrLoadDsa(dsaId);
+  let submitData = createOrLoadSubmit(eventId);
+  submitData.user = event.params.user;
+  submitData.userId = event.params.id;
+  submitData.safeHF = event.params.safeHF;
+  submitData.thresholdHF = event.params.thresholdHF;
+  submitData.currentHf = event.params.currentHf;
+  submitData.account = dsaId;
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.previousAdmin = event.params.previousAdmin
-  entity.newAdmin = event.params.newAdmin
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.admin(...)
-  // - contract.implementation(...)
+  submitData.save();
+  dsa.save();
 }
 
-export function handleBeaconUpgraded(event: BeaconUpgraded): void {}
+export function handleLogCancelAutomation(event: LogCancelledAutomation): void {
+  let dsaId = event.params.user.toHexString() + "#" + event.params.id.toString();
+  let eventId =
+    event.transaction.hash.toHexString() + event.logIndex.toString();
 
-export function handleUpgraded(event: Upgraded): void {}
+  log.info("transaction hash: {} and from: {} ", [
+    event.transaction.hash.toHexString(),
+    event.transaction.from.toHexString(),
+  ]);
+  log.info("ID: {}", [dsaId]);
+
+  let dsa = createOrLoadDsa(dsaId);
+  let cancelData = createOrLoadCancelData(eventId);
+
+  cancelData.user = event.params.user;
+  cancelData.userId = event.params.id;
+  cancelData.nonce = event.params.nonce;
+  cancelData.account = dsaId;
+
+  cancelData.save();
+  dsa.save();
+}
+
+export function handleSystemCancelledAutomation(
+  event: LogSystemCancelledAutomation
+): void {
+  let dsaId = event.params.user.toHexString() + "#" + event.params.id.toString();
+  let eventId =
+    event.transaction.hash.toHexString() + event.logIndex.toString();
+
+  log.info("transaction hash: {} and from: {} ", [
+    event.transaction.hash.toHexString(),
+    event.transaction.from.toHexString(),
+  ]);
+  log.info("ID: {}", [dsaId]);
+
+  let dsa = createOrLoadDsa(dsaId);
+  let cancelData = createOrLoadSystemCancelData(eventId);
+
+  cancelData.user = event.params.user;
+  cancelData.userId = event.params.id;
+  cancelData.nonce = event.params.nonce;
+  cancelData.errorCode = event.params.errorCode;
+  cancelData.account = dsaId;
+
+  cancelData.save();
+  dsa.save();
+}
+
+export function handleLogExecuteAutomationMetadata(
+  event: LogExecutedAutomation
+): void {
+  let dsaId = event.params.user.toHexString() + "#" + event.params.id.toString();
+  let eventId =
+    event.transaction.hash.toHexString() + event.logIndex.toString();
+
+  log.info("transaction hash: {} and from: {} ", [
+    event.transaction.hash.toHexString(),
+    event.transaction.from.toHexString(),
+  ]);
+  log.info("ID: {}", [dsaId]);
+
+  let dsa = createOrLoadDsa(dsaId);
+  let executeData = createOrLoadExecuteMetaData(eventId);
+
+  executeData.user = event.params.user;
+  executeData.userId = event.params.id;
+  executeData.nonce = event.params.nonce;
+  executeData.isSafe = event.params.isSafe;
+  executeData.metadata = event.params.metadata;
+  executeData.account = dsaId;
+
+  executeData.save();
+  dsa.save();
+}
+
+export function handleLogExecuteAutomation(
+  event: LogExecutedAutomationParams
+): void {
+  
+  let dsaId = event.params.user.toHexString() + "#" + event.params.id.toString();
+  let eventId =
+    event.transaction.hash.toHexString() + event.logIndex.toString();
+
+  log.info("transaction hash: {} and from: {} ", [
+    event.transaction.hash.toHexString(),
+    event.transaction.from.toHexString(),
+  ]);
+  log.info("ID: {}", [dsaId]);
+
+  let dsa = createOrLoadDsa(dsaId);
+  let executeData = createOrLoadExecute(eventId);
+  let params = createOrLoadExecutionParams(eventId);
+
+  executeData.user = event.params.user;
+  executeData.userId = event.params.id;
+  executeData.nonce = event.params.nonce;
+  executeData.finalHf = event.params.finalHf;
+  executeData.initialHf = event.params.initialHf;
+  executeData.automationFee = event.params.automationFee;
+  params.collateralToken = event.params.params.collateralToken; 
+  params.debtToken = event.params.params.debtToken; 
+  params.collateralAmount = event.params.params.collateralAmount; 
+  params.debtAmount = event.params.params.debtAmount; 
+  params.collateralAmountWithTotalFee = event.params.params.collateralAmountWithTotalFee; 
+  let swaps = createOrLoadSwap(eventId);
+  swaps.buyToken = event.params.params.swap.buyToken;
+  swaps.sellToken = event.params.params.swap.sellToken;
+  swaps.sellAmt = event.params.params.swap.sellAmt;
+  swaps.unitAmt = event.params.params.swap.unitAmt;
+  swaps.callData = event.params.params.swap.callData;
+  let spells = createOrLoadSpell(eventId);
+  spells._datas = event.params.spells._datas;
+  spells._targets = event.params.spells._targets;
+  params.swap = swaps.id; 
+  executeData.params = params.id;
+  executeData.spells = spells.id;
+  executeData.account = dsaId;
+
+  params.save();
+  swaps.save();
+  spells.save();
+  executeData.save();
+  dsa.save();
+}
+
+export function handleExecutors(event: LogFlippedExecutors): void {
+  let id = "ALL"
+  let executors_ = Executors.load(id);
+  if(executors_ == null){
+    executors_ = new Executors(id);
+    executors_.executors = [];
+    executors_.status = [];
+  }
+  let execArr = executors_.executors;
+  let statusArr = executors_.status;
+  for(let i=0;i<event.params.executors.length;i++){
+    execArr.push(event.params.executors[i]);
+    statusArr.push(event.params.status[i])
+  }
+  executors_.executors = execArr;
+  executors_.status = statusArr;
+  executors_.save();
+}

@@ -1,6 +1,91 @@
-type ExampleEntity @entity {
+type ExecutionParams @entity{
   id: ID!
-  count: BigInt!
-  previousAdmin: Bytes! # address
-  newAdmin: Bytes! # address
+  collateralToken: Bytes!
+  debtToken: Bytes!
+  collateralAmount: BigInt!
+  debtAmount: BigInt!
+  collateralAmountWithTotalFee: BigInt!
+  swap: Swap!
+  route: BigInt!
+  rateMode: BigInt!
+}
+
+type Swap @entity {
+  id: ID!
+  buyToken: Bytes!
+  sellToken: Bytes!
+  sellAmt: BigInt!
+  unitAmt: BigInt!
+  callData: Bytes!
+}
+
+type Spell @entity {
+  id: ID!
+  _targets: [String!]!
+  _datas: [Bytes!]!
+}
+
+type Account @entity {
+  id: ID!
+  submitAutomation: [SubmitData!]! @derivedFrom (field: "account")
+  executeAutomation: [ExecuteData!]! @derivedFrom (field: "account")
+  executeMetaData: [ExecuteMetaData!]! @derivedFrom (field: "account")
+  cancelData: [CancelData!]! @derivedFrom (field: "account")
+  systemCancelData: [SystemCancelData!]! @derivedFrom (field: "account")
+}
+
+type SubmitData @entity {
+  id: ID!
+  user: Bytes!
+  userId: BigInt!
+  safeHF: BigInt!
+  thresholdHF: BigInt!
+  currentHf: BigInt!
+  account: Account!
+}
+
+type ExecuteData @entity {
+  id: ID!
+  user: Bytes!
+  userId: BigInt!
+  nonce: BigInt!
+  finalHf: BigInt!
+  initialHf: BigInt!
+  automationFee: Int!
+  params: ExecutionParams!
+  spells: Spell!
+  account: Account!
+}
+
+type ExecuteMetaData @entity {
+  id: ID!
+  user: Bytes!
+  userId: BigInt!
+  nonce: BigInt!
+  isSafe: Boolean!
+  metadata: Bytes!
+  account: Account!
+}
+
+type CancelData @entity {
+  id: ID!
+  user: Bytes!
+  userId: BigInt!
+  nonce: BigInt!
+  account: Account!
+}
+
+type SystemCancelData @entity {
+  id: ID!
+  user: Bytes!
+  userId: BigInt!
+  nonce: BigInt!
+  errorCode: Int!
+  account: Account!
+}
+
+type Executors @entity {
+  id: ID!
+  executors: [Bytes!]!
+  status: [Boolean!]!
 }
