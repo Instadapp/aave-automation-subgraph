@@ -33,11 +33,11 @@ Query Structure
       params{
         id
         collateralToken
-  			debtToken
-  			collateralAmount
-  			debtAmount
-  			collateralAmountWithTotalFee
-  			swap{
+        debtToken
+        collateralAmount
+        debtAmount
+        collateralAmountWithTotalFee
+        swap{
           id
           buyToken
           sellToken
@@ -45,8 +45,8 @@ Query Structure
           unitAmt
           callData
         }
-  			route
-  			rateMode
+        route
+        rateMode
       }
       spells{
         id
