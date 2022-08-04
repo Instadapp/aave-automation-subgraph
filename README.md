@@ -68,11 +68,10 @@ Query Structure
       errorCode
     }
   }
-  # executors{
-  #   id
-  #   executors
-  #   status
-  # }
+  executors{
+    id
+    executors
+  }
 }
 
 </pre>
