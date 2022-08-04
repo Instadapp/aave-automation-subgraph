@@ -1,7 +1,14 @@
 {
   "matic": {
-    "undefined": {
-      "address": "0x6Bf41D02026b5B21F2a0bb0880b8545768a7151f"
+    "InstaAutomation": {
+      "address": "0x3cF499Dbd2aBB6505f48Db27a9871523A38e6e2C",
+      "startBlock": 31471200
+    }
+  },
+  "avalanche": {
+    "InstaAutomation": {
+      "address": "0x08c1c01be430C9381AD2794412C3E940254CD97c",
+      "startBlock": 18160000
     }
   }
 }
