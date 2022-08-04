@@ -751,7 +751,7 @@ export class SystemCancelData extends Entity {
   }
 }
 
-export class Executors extends Entity {
+export class Executor extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -759,18 +759,18 @@ export class Executors extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Executors entity without an ID");
+    assert(id != null, "Cannot save Executor entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Executors must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Executor must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Executors", id.toString(), this);
+      store.set("Executor", id.toString(), this);
     }
   }
 
-  static load(id: string): Executors | null {
-    return changetype<Executors | null>(store.get("Executors", id));
+  static load(id: string): Executor | null {
+    return changetype<Executor | null>(store.get("Executor", id));
   }
 
   get id(): string {
@@ -789,14 +789,5 @@ export class Executors extends Entity {
 
   set executors(value: Array<Bytes>) {
     this.set("executors", Value.fromBytesArray(value));
-  }
-
-  get status(): Array<boolean> {
-    let value = this.get("status");
-    return value!.toBooleanArray();
-  }
-
-  set status(value: Array<boolean>) {
-    this.set("status", Value.fromBooleanArray(value));
   }
 }

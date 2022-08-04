@@ -84,8 +84,7 @@ type SystemCancelData @entity {
   account: Account!
 }
 
-type Executors @entity {
+type Executor @entity {
   id: ID!
   executors: [Bytes!]!
-  status: [Boolean!]!
 }

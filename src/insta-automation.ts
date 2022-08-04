@@ -18,7 +18,7 @@ import {
   SubmitData,
   CancelData,
   SystemCancelData,
-  Executors
+  Executor
 } from "../generated/schema";
 import {
   createOrLoadCancelData,
@@ -184,19 +184,25 @@ export function handleLogExecuteAutomation(
 
 export function handleExecutors(event: LogFlippedExecutors): void {
   let id = "ALL"
-  let executors_ = Executors.load(id);
+  let executors_ = Executor.load(id);
   if(executors_ == null){
-    executors_ = new Executors(id);
+    executors_ = new Executor(id);
     executors_.executors = [];
-    executors_.status = [];
   }
   let execArr = executors_.executors;
-  let statusArr = executors_.status;
+  let statusArr = event.params.status;
   for(let i=0;i<event.params.executors.length;i++){
-    execArr.push(event.params.executors[i]);
-    statusArr.push(event.params.status[i])
+    let index = execArr.indexOf(event.params.executors[i]);
+    if(statusArr[i] === true){
+      if(index == -1){
+        execArr.push(event.params.executors[i]);
+      }
+    } else {
+      if(index != -1){
+        execArr.splice(index-1, 1);
+      }
+    }
   }
   executors_.executors = execArr;
-  executors_.status = statusArr;
   executors_.save();
 }
