@@ -3,6 +3,7 @@
 Tracks the data related to Submit, Execute and Cancel automation.
 
 Subgraph deployment:
+
 - Polygon: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-polygon?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-polygon?selected=playground)
 
 Query Structure
@@ -75,5 +76,3 @@ Query Structure
 }
 
 </pre>
-
-
