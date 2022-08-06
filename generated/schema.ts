@@ -242,6 +242,83 @@ export class Spell extends Entity {
   }
 }
 
+export class TransactionData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TransactionData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TransactionData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TransactionData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): TransactionData | null {
+    return changetype<TransactionData | null>(store.get("TransactionData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value!.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get timeStamp(): BigInt {
+    let value = this.get("timeStamp");
+    return value!.toBigInt();
+  }
+
+  set timeStamp(value: BigInt) {
+    this.set("timeStamp", Value.fromBigInt(value));
+  }
+
+  get logIndex(): BigInt {
+    let value = this.get("logIndex");
+    return value!.toBigInt();
+  }
+
+  set logIndex(value: BigInt) {
+    this.set("logIndex", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    return value!.toBytes();
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
+
+  get transactionLogIndex(): BigInt {
+    let value = this.get("transactionLogIndex");
+    return value!.toBigInt();
+  }
+
+  set transactionLogIndex(value: BigInt) {
+    this.set("transactionLogIndex", Value.fromBigInt(value));
+  }
+}
+
 export class Account extends Entity {
   constructor(id: string) {
     super();
@@ -273,6 +350,15 @@ export class Account extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get user(): Bytes {
+    let value = this.get("user");
+    return value!.toBytes();
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
   get submitAutomation(): Array<string> {
     let value = this.get("submitAutomation");
     return value!.toStringArray();
@@ -289,15 +375,6 @@ export class Account extends Entity {
 
   set executeAutomation(value: Array<string>) {
     this.set("executeAutomation", Value.fromStringArray(value));
-  }
-
-  get executeMetaData(): Array<string> {
-    let value = this.get("executeMetaData");
-    return value!.toStringArray();
-  }
-
-  set executeMetaData(value: Array<string>) {
-    this.set("executeMetaData", Value.fromStringArray(value));
   }
 
   get cancelData(): Array<string> {
@@ -403,6 +480,15 @@ export class SubmitData extends Entity {
   set account(value: string) {
     this.set("account", Value.fromString(value));
   }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
 }
 
 export class ExecuteData extends Entity {
@@ -499,83 +585,6 @@ export class ExecuteData extends Entity {
     this.set("params", Value.fromString(value));
   }
 
-  get spells(): string {
-    let value = this.get("spells");
-    return value!.toString();
-  }
-
-  set spells(value: string) {
-    this.set("spells", Value.fromString(value));
-  }
-
-  get account(): string {
-    let value = this.get("account");
-    return value!.toString();
-  }
-
-  set account(value: string) {
-    this.set("account", Value.fromString(value));
-  }
-}
-
-export class ExecuteMetaData extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save ExecuteMetaData entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type ExecuteMetaData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("ExecuteMetaData", id.toString(), this);
-    }
-  }
-
-  static load(id: string): ExecuteMetaData | null {
-    return changetype<ExecuteMetaData | null>(store.get("ExecuteMetaData", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get user(): Bytes {
-    let value = this.get("user");
-    return value!.toBytes();
-  }
-
-  set user(value: Bytes) {
-    this.set("user", Value.fromBytes(value));
-  }
-
-  get userId(): BigInt {
-    let value = this.get("userId");
-    return value!.toBigInt();
-  }
-
-  set userId(value: BigInt) {
-    this.set("userId", Value.fromBigInt(value));
-  }
-
-  get nonce(): BigInt {
-    let value = this.get("nonce");
-    return value!.toBigInt();
-  }
-
-  set nonce(value: BigInt) {
-    this.set("nonce", Value.fromBigInt(value));
-  }
-
   get isSafe(): boolean {
     let value = this.get("isSafe");
     return value!.toBoolean();
@@ -585,13 +594,13 @@ export class ExecuteMetaData extends Entity {
     this.set("isSafe", Value.fromBoolean(value));
   }
 
-  get metadata(): Bytes {
-    let value = this.get("metadata");
+  get metaData(): Bytes {
+    let value = this.get("metaData");
     return value!.toBytes();
   }
 
-  set metadata(value: Bytes) {
-    this.set("metadata", Value.fromBytes(value));
+  set metaData(value: Bytes) {
+    this.set("metaData", Value.fromBytes(value));
   }
 
   get account(): string {
@@ -601,6 +610,15 @@ export class ExecuteMetaData extends Entity {
 
   set account(value: string) {
     this.set("account", Value.fromString(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
   }
 }
 
@@ -669,6 +687,15 @@ export class CancelData extends Entity {
 
   set account(value: string) {
     this.set("account", Value.fromString(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
   }
 }
 
@@ -748,6 +775,403 @@ export class SystemCancelData extends Entity {
 
   set account(value: string) {
     this.set("account", Value.fromString(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
+}
+
+export class ChangedOwner extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ChangedOwner entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ChangedOwner must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ChangedOwner", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ChangedOwner | null {
+    return changetype<ChangedOwner | null>(store.get("ChangedOwner", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get oldOwner(): Bytes {
+    let value = this.get("oldOwner");
+    return value!.toBytes();
+  }
+
+  set oldOwner(value: Bytes) {
+    this.set("oldOwner", Value.fromBytes(value));
+  }
+
+  get newOwner(): Bytes {
+    let value = this.get("newOwner");
+    return value!.toBytes();
+  }
+
+  set newOwner(value: Bytes) {
+    this.set("newOwner", Value.fromBytes(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
+}
+
+export class FeeTransferData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save FeeTransferData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type FeeTransferData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("FeeTransferData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): FeeTransferData | null {
+    return changetype<FeeTransferData | null>(store.get("FeeTransferData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get recipient(): Bytes {
+    let value = this.get("recipient");
+    return value!.toBytes();
+  }
+
+  set recipient(value: Bytes) {
+    this.set("recipient", Value.fromBytes(value));
+  }
+
+  get tokens(): Array<Bytes> {
+    let value = this.get("tokens");
+    return value!.toBytesArray();
+  }
+
+  set tokens(value: Array<Bytes>) {
+    this.set("tokens", Value.fromBytesArray(value));
+  }
+
+  get amount(): Array<BigInt> {
+    let value = this.get("amount");
+    return value!.toBigIntArray();
+  }
+
+  set amount(value: Array<BigInt>) {
+    this.set("amount", Value.fromBigIntArray(value));
+  }
+
+  get from(): Bytes {
+    let value = this.get("from");
+    return value!.toBytes();
+  }
+
+  set from(value: Bytes) {
+    this.set("from", Value.fromBytes(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
+}
+
+export class SystemCallData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save SystemCallData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type SystemCallData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("SystemCallData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): SystemCallData | null {
+    return changetype<SystemCallData | null>(store.get("SystemCallData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sender(): Bytes {
+    let value = this.get("sender");
+    return value!.toBytes();
+  }
+
+  set sender(value: Bytes) {
+    this.set("sender", Value.fromBytes(value));
+  }
+
+  get actionId(): string {
+    let value = this.get("actionId");
+    return value!.toString();
+  }
+
+  set actionId(value: string) {
+    this.set("actionId", Value.fromString(value));
+  }
+
+  get metaData(): Bytes {
+    let value = this.get("metaData");
+    return value!.toBytes();
+  }
+
+  set metaData(value: Bytes) {
+    this.set("metaData", Value.fromBytes(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
+}
+
+export class UpdateAutomationFeeData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save UpdateAutomationFeeData entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UpdateAutomationFeeData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UpdateAutomationFeeData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UpdateAutomationFeeData | null {
+    return changetype<UpdateAutomationFeeData | null>(
+      store.get("UpdateAutomationFeeData", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get oldAutomationFee(): i32 {
+    let value = this.get("oldAutomationFee");
+    return value!.toI32();
+  }
+
+  set oldAutomationFee(value: i32) {
+    this.set("oldAutomationFee", Value.fromI32(value));
+  }
+
+  get newAutomationFee(): i32 {
+    let value = this.get("newAutomationFee");
+    return value!.toI32();
+  }
+
+  set newAutomationFee(value: i32) {
+    this.set("newAutomationFee", Value.fromI32(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
+}
+
+export class UpdateBufferHfData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save UpdateBufferHfData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UpdateBufferHfData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UpdateBufferHfData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UpdateBufferHfData | null {
+    return changetype<UpdateBufferHfData | null>(
+      store.get("UpdateBufferHfData", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get oldBuffer(): BigInt {
+    let value = this.get("oldBuffer");
+    return value!.toBigInt();
+  }
+
+  set oldBuffer(value: BigInt) {
+    this.set("oldBuffer", Value.fromBigInt(value));
+  }
+
+  get newBuffer(): BigInt {
+    let value = this.get("newBuffer");
+    return value!.toBigInt();
+  }
+
+  set newBuffer(value: BigInt) {
+    this.set("newBuffer", Value.fromBigInt(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
+  }
+}
+
+export class UpdateMinHfData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save UpdateMinHfData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UpdateMinHfData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UpdateMinHfData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UpdateMinHfData | null {
+    return changetype<UpdateMinHfData | null>(store.get("UpdateMinHfData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get oldMinHf(): BigInt {
+    let value = this.get("oldMinHf");
+    return value!.toBigInt();
+  }
+
+  set oldMinHf(value: BigInt) {
+    this.set("oldMinHf", Value.fromBigInt(value));
+  }
+
+  get newMinHf(): BigInt {
+    let value = this.get("newMinHf");
+    return value!.toBigInt();
+  }
+
+  set newMinHf(value: BigInt) {
+    this.set("newMinHf", Value.fromBigInt(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
   }
 }
 

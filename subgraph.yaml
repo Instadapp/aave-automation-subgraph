@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: InstaAutomation
-    network: avalanche
+    network: matic
     source:
       abi: InstaAutomation
-      address: "0x08c1c01be430C9381AD2794412C3E940254CD97c"
-      startBlock: 18160000
+      address: "0x3cF499Dbd2aBB6505f48Db27a9871523A38e6e2C"
+      startBlock: 31471200
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -24,24 +24,36 @@ dataSources:
         - CancelData
         - SystemCancelData
         - Executors
-        - Spell
-        - Swap
-        - ExceutionParams
+        - ChangedOwner
+        - FeeTransferData
+        - SystemCallData
+        - UpdateAutomationFeeData
+        - UpdateBufferHfData
+        - UpdateMinHfData
       eventHandlers:
         - event: LogCancelledAutomation(indexed address,indexed uint32,indexed uint32)
           handler: handleLogCancelAutomation
-        - event: LogSubmittedAutomation(indexed address,indexed
-            uint32,uint128,uint128,uint128)
-          handler: handleLogSubmitAutomation
-        - event: LogExecutedAutomationParams(indexed address,indexed uint32,indexed
-            uint32,uint128,uint128,uint16,(address,address,uint256,uint256,uint256,(address,address,uint256,uint256,bytes),uint256,uint256),(string[],bytes[]))
-          handler: handleLogExecuteAutomation
         - event: LogExecutedAutomation(indexed address,indexed uint32,indexed
-            uint32,bool,bytes)
-          handler: handleLogExecuteAutomationMetadata
+            uint32,(address,address,uint256,uint256,uint256,(address,address,uint256,uint256,bytes),uint256,uint256),bool,uint16,bytes,uint128,uint128)
+          handler: handleLogExecuteAutomation
+        - event: LogFeeTransferred(indexed address,address[],uint256[])
+          handler: handleLogFeeTransferred
+        - event: LogFlippedExecutors(address[],bool[])
+          handler: handleExecutors
+        - event: LogSystemCall(indexed address,string,bytes)
+          handler: handleLogSystemCall
         - event: LogSystemCancelledAutomation(indexed address,indexed uint32,indexed
             uint32,uint8)
           handler: handleSystemCancelledAutomation
-        - event: LogFlippedExecutors(address[],bool[])
-          handler: handleExecutors
+        - event: LogUpdatedAutomationFee(uint16,uint16)
+          handler: handleLogUpdateAutomationFee
+        - event: LogUpdatedBufferHf(uint128,uint128)
+          handler: handleUpdatedBufferHf
+        - event: LogUpdatedMinHf(uint128,uint128)
+          handler: handleLogUpdatedMinHf
+        - event: LogSubmittedAutomation(indexed address,indexed
+            uint32,uint128,uint128,uint128)
+          handler: handleLogSubmitAutomation
+        - event: LogChangedOwner(indexed address,indexed address)
+          handler: handleLogChangedOwner
       file: ./src/insta-automation.ts

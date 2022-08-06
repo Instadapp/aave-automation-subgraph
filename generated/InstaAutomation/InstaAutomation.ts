@@ -36,6 +36,28 @@ export class LogCancelledAutomation__Params {
   }
 }
 
+export class LogChangedOwner extends ethereum.Event {
+  get params(): LogChangedOwner__Params {
+    return new LogChangedOwner__Params(this);
+  }
+}
+
+export class LogChangedOwner__Params {
+  _event: LogChangedOwner;
+
+  constructor(event: LogChangedOwner) {
+    this._event = event;
+  }
+
+  get oldOnwer(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get newOnwer(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class LogExecutedAutomation extends ethereum.Event {
   get params(): LogExecutedAutomation__Params {
     return new LogExecutedAutomation__Params(this);
@@ -61,66 +83,34 @@ export class LogExecutedAutomation__Params {
     return this._event.parameters[2].value.toBigInt();
   }
 
+  get params(): LogExecutedAutomationParamsStruct {
+    return changetype<LogExecutedAutomationParamsStruct>(
+      this._event.parameters[3].value.toTuple()
+    );
+  }
+
   get isSafe(): boolean {
-    return this._event.parameters[3].value.toBoolean();
-  }
-
-  get metadata(): Bytes {
-    return this._event.parameters[4].value.toBytes();
-  }
-}
-
-export class LogExecutedAutomationParams extends ethereum.Event {
-  get params(): LogExecutedAutomationParams__Params {
-    return new LogExecutedAutomationParams__Params(this);
-  }
-}
-
-export class LogExecutedAutomationParams__Params {
-  _event: LogExecutedAutomationParams;
-
-  constructor(event: LogExecutedAutomationParams) {
-    this._event = event;
-  }
-
-  get user(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get id(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
-  get nonce(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-
-  get finalHf(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
-
-  get initialHf(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[4].value.toBoolean();
   }
 
   get automationFee(): i32 {
     return this._event.parameters[5].value.toI32();
   }
 
-  get params(): LogExecutedAutomationParamsParamsStruct {
-    return changetype<LogExecutedAutomationParamsParamsStruct>(
-      this._event.parameters[6].value.toTuple()
-    );
+  get metadata(): Bytes {
+    return this._event.parameters[6].value.toBytes();
   }
 
-  get spells(): LogExecutedAutomationParamsSpellsStruct {
-    return changetype<LogExecutedAutomationParamsSpellsStruct>(
-      this._event.parameters[7].value.toTuple()
-    );
+  get finalHf(): BigInt {
+    return this._event.parameters[7].value.toBigInt();
+  }
+
+  get initialHf(): BigInt {
+    return this._event.parameters[8].value.toBigInt();
   }
 }
 
-export class LogExecutedAutomationParamsParamsStruct extends ethereum.Tuple {
+export class LogExecutedAutomationParamsStruct extends ethereum.Tuple {
   get collateralToken(): Address {
     return this[0].toAddress();
   }
@@ -141,10 +131,8 @@ export class LogExecutedAutomationParamsParamsStruct extends ethereum.Tuple {
     return this[4].toBigInt();
   }
 
-  get swap(): LogExecutedAutomationParamsParamsSwapStruct {
-    return changetype<LogExecutedAutomationParamsParamsSwapStruct>(
-      this[5].toTuple()
-    );
+  get swap(): LogExecutedAutomationParamsSwapStruct {
+    return changetype<LogExecutedAutomationParamsSwapStruct>(this[5].toTuple());
   }
 
   get route(): BigInt {
@@ -156,7 +144,7 @@ export class LogExecutedAutomationParamsParamsStruct extends ethereum.Tuple {
   }
 }
 
-export class LogExecutedAutomationParamsParamsSwapStruct extends ethereum.Tuple {
+export class LogExecutedAutomationParamsSwapStruct extends ethereum.Tuple {
   get buyToken(): Address {
     return this[0].toAddress();
   }
@@ -178,16 +166,6 @@ export class LogExecutedAutomationParamsParamsSwapStruct extends ethereum.Tuple 
   }
 }
 
-export class LogExecutedAutomationParamsSpellsStruct extends ethereum.Tuple {
-  get _targets(): Array<string> {
-    return this[0].toStringArray();
-  }
-
-  get _datas(): Array<Bytes> {
-    return this[1].toBytesArray();
-  }
-}
-
 export class LogFeeTransferred extends ethereum.Event {
   get params(): LogFeeTransferred__Params {
     return new LogFeeTransferred__Params(this);
@@ -201,7 +179,7 @@ export class LogFeeTransferred__Params {
     this._event = event;
   }
 
-  get recipient_(): Address {
+  get recipient(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
@@ -267,6 +245,32 @@ export class LogSubmittedAutomation__Params {
 
   get currentHf(): BigInt {
     return this._event.parameters[4].value.toBigInt();
+  }
+}
+
+export class LogSystemCall extends ethereum.Event {
+  get params(): LogSystemCall__Params {
+    return new LogSystemCall__Params(this);
+  }
+}
+
+export class LogSystemCall__Params {
+  _event: LogSystemCall;
+
+  constructor(event: LogSystemCall) {
+    this._event = event;
+  }
+
+  get sender(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get actionId(): string {
+    return this._event.parameters[1].value.toString();
+  }
+
+  get metadata(): Bytes {
+    return this._event.parameters[2].value.toBytes();
   }
 }
 
@@ -418,16 +422,6 @@ export class InstaAutomation___userAutomationConfigsResult {
 
   getThresholdHF(): BigInt {
     return this.value4;
-  }
-}
-
-export class InstaAutomation__castInputSpellsStruct extends ethereum.Tuple {
-  get _targets(): Array<string> {
-    return this[0].toStringArray();
-  }
-
-  get _datas(): Array<Bytes> {
-    return this[1].toBytesArray();
   }
 }
 
@@ -621,31 +615,6 @@ export class InstaAutomation extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  cast(dsa: Address, spells: InstaAutomation__castInputSpellsStruct): boolean {
-    let result = super.call("cast", "cast(address,(string[],bytes[])):(bool)", [
-      ethereum.Value.fromAddress(dsa),
-      ethereum.Value.fromTuple(spells)
-    ]);
-
-    return result[0].toBoolean();
-  }
-
-  try_cast(
-    dsa: Address,
-    spells: InstaAutomation__castInputSpellsStruct
-  ): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "cast",
-      "cast(address,(string[],bytes[])):(bool)",
-      [ethereum.Value.fromAddress(dsa), ethereum.Value.fromTuple(spells)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
   getHealthFactor(user: Address): BigInt {
     let result = super.call(
       "getHealthFactor",
@@ -662,21 +631,6 @@ export class InstaAutomation extends ethereum.SmartContract {
       "getHealthFactor(address):(uint256)",
       [ethereum.Value.fromAddress(user)]
     );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  version(): BigInt {
-    let result = super.call("version", "version():(uint256)", []);
-
-    return result[0].toBigInt();
-  }
-
-  try_version(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("version", "version():(uint256)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -745,53 +699,33 @@ export class CancelAutomationRequestCall__Outputs {
   }
 }
 
-export class CastCall extends ethereum.Call {
-  get inputs(): CastCall__Inputs {
-    return new CastCall__Inputs(this);
+export class ChangeOwnerCall extends ethereum.Call {
+  get inputs(): ChangeOwnerCall__Inputs {
+    return new ChangeOwnerCall__Inputs(this);
   }
 
-  get outputs(): CastCall__Outputs {
-    return new CastCall__Outputs(this);
+  get outputs(): ChangeOwnerCall__Outputs {
+    return new ChangeOwnerCall__Outputs(this);
   }
 }
 
-export class CastCall__Inputs {
-  _call: CastCall;
+export class ChangeOwnerCall__Inputs {
+  _call: ChangeOwnerCall;
 
-  constructor(call: CastCall) {
+  constructor(call: ChangeOwnerCall) {
     this._call = call;
   }
 
-  get dsa(): Address {
+  get newOwner_(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
-
-  get spells(): CastCallSpellsStruct {
-    return changetype<CastCallSpellsStruct>(
-      this._call.inputValues[1].value.toTuple()
-    );
-  }
 }
 
-export class CastCall__Outputs {
-  _call: CastCall;
+export class ChangeOwnerCall__Outputs {
+  _call: ChangeOwnerCall;
 
-  constructor(call: CastCall) {
+  constructor(call: ChangeOwnerCall) {
     this._call = call;
-  }
-
-  get success(): boolean {
-    return this._call.outputValues[0].value.toBoolean();
-  }
-}
-
-export class CastCallSpellsStruct extends ethereum.Tuple {
-  get _targets(): Array<string> {
-    return this[0].toStringArray();
-  }
-
-  get _datas(): Array<Bytes> {
-    return this[1].toBytesArray();
   }
 }
 
@@ -1009,6 +943,40 @@ export class SubmitAutomationRequestCall__Outputs {
   }
 }
 
+export class SystemCallCall extends ethereum.Call {
+  get inputs(): SystemCallCall__Inputs {
+    return new SystemCallCall__Inputs(this);
+  }
+
+  get outputs(): SystemCallCall__Outputs {
+    return new SystemCallCall__Outputs(this);
+  }
+}
+
+export class SystemCallCall__Inputs {
+  _call: SystemCallCall;
+
+  constructor(call: SystemCallCall) {
+    this._call = call;
+  }
+
+  get actionId_(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get metadata_(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class SystemCallCall__Outputs {
+  _call: SystemCallCall;
+
+  constructor(call: SystemCallCall) {
+    this._call = call;
+  }
+}
+
 export class SystemCancelCall extends ethereum.Call {
   get inputs(): SystemCancelCall__Inputs {
     return new SystemCancelCall__Inputs(this);
@@ -1026,16 +994,16 @@ export class SystemCancelCall__Inputs {
     this._call = call;
   }
 
-  get user_(): Address {
-    return this._call.inputValues[0].value.toAddress();
+  get users_(): Array<Address> {
+    return this._call.inputValues[0].value.toAddressArray();
   }
 
-  get id_(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
+  get ids_(): Array<BigInt> {
+    return this._call.inputValues[1].value.toBigIntArray();
   }
 
-  get errorCode_(): i32 {
-    return this._call.inputValues[2].value.toI32();
+  get errorCodes_(): Array<i32> {
+    return this._call.inputValues[2].value.toI32Array();
   }
 }
 

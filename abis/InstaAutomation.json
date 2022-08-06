@@ -42,35 +42,17 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "user",
+        "name": "oldOnwer",
         "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "uint32",
-        "name": "id",
-        "type": "uint32"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint32",
-        "name": "nonce",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isSafe",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "metadata",
-        "type": "bytes"
+        "internalType": "address",
+        "name": "newOnwer",
+        "type": "address"
       }
     ],
-    "name": "LogExecutedAutomation",
+    "name": "LogChangedOwner",
     "type": "event"
   },
   {
@@ -93,24 +75,6 @@
         "internalType": "uint32",
         "name": "nonce",
         "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint128",
-        "name": "finalHf",
-        "type": "uint128"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint128",
-        "name": "initialHf",
-        "type": "uint128"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "automationFee",
-        "type": "uint16"
       },
       {
         "components": [
@@ -172,21 +136,37 @@
         "type": "tuple"
       },
       {
-        "components": [
-          {
-            "internalType": "string[]",
-            "name": "_targets",
-            "type": "string[]"
-          },
-          { "internalType": "bytes[]", "name": "_datas", "type": "bytes[]" }
-        ],
         "indexed": false,
-        "internalType": "struct Structs.Spell",
-        "name": "spells",
-        "type": "tuple"
+        "internalType": "bool",
+        "name": "isSafe",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "automationFee",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "metadata",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "finalHf",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "initialHf",
+        "type": "uint128"
       }
     ],
-    "name": "LogExecutedAutomationParams",
+    "name": "LogExecutedAutomation",
     "type": "event"
   },
   {
@@ -195,7 +175,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "recipient_",
+        "name": "recipient",
         "type": "address"
       },
       {
@@ -268,6 +248,31 @@
       }
     ],
     "name": "LogSubmittedAutomation",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "actionId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "metadata",
+        "type": "bytes"
+      }
+    ],
+    "name": "LogSystemCall",
     "type": "event"
   },
   {
@@ -440,27 +445,10 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "contract AccountInterface",
-        "name": "dsa",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "string[]",
-            "name": "_targets",
-            "type": "string[]"
-          },
-          { "internalType": "bytes[]", "name": "_datas", "type": "bytes[]" }
-        ],
-        "internalType": "struct Structs.Spell",
-        "name": "spells",
-        "type": "tuple"
-      }
+      { "internalType": "address", "name": "newOwner_", "type": "address" }
     ],
-    "name": "cast",
-    "outputs": [{ "internalType": "bool", "name": "success", "type": "bool" }],
+    "name": "changeOwner",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -591,9 +579,19 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "user_", "type": "address" },
-      { "internalType": "uint32", "name": "id_", "type": "uint32" },
-      { "internalType": "uint8", "name": "errorCode_", "type": "uint8" }
+      { "internalType": "string", "name": "actionId_", "type": "string" },
+      { "internalType": "bytes", "name": "metadata_", "type": "bytes" }
+    ],
+    "name": "systemCall",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "users_", "type": "address[]" },
+      { "internalType": "uint32[]", "name": "ids_", "type": "uint32[]" },
+      { "internalType": "uint8[]", "name": "errorCodes_", "type": "uint8[]" }
     ],
     "name": "systemCancel",
     "outputs": [],
@@ -644,22 +642,5 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "version",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
   }
 ]
