@@ -13,6 +13,7 @@ Query Structure
 {
   accounts{
     id
+    user
     submitAutomation{
       id
       user
@@ -20,28 +21,36 @@ Query Structure
       safeHF
       thresholdHF
       currentHf
-    }
-    executeMetaData{
-      id
-      isSafe
-      metadata
+      transactionDetail{
+        id
+        blockNumber
+        timeStamp
+        transactionHash
+        transactionLogIndex
+        logIndex
+      }
     }
     executeAutomation{
       id
+      user
+      userId
+      nonce
       finalHf
       initialHf
       automationFee
+      isSafe
+      metaData
       params{
         id
         collateralToken
-        debtToken
         collateralAmount
+        debtToken
         debtAmount
         collateralAmountWithTotalFee
         swap{
           id
-          buyToken
           sellToken
+          buyToken
           sellAmt
           unitAmt
           callData
@@ -49,10 +58,13 @@ Query Structure
         route
         rateMode
       }
-      spells{
+      transactionDetail{
         id
-        _targets
-        _datas
+        blockNumber
+        timeStamp
+        transactionHash
+        transactionLogIndex
+        logIndex
       }
     }
     cancelData{
@@ -60,19 +72,111 @@ Query Structure
       user
       userId
       nonce
+      transactionDetail{
+        id
+        blockNumber
+        timeStamp
+        transactionHash
+        transactionLogIndex
+        logIndex
+      }
     }
     systemCancelData{
       id
-      userId
       user
+      userId
       nonce
       errorCode
+      transactionDetail{
+        id
+        blockNumber
+        timeStamp
+        transactionHash
+        transactionLogIndex
+        logIndex
+      }
     }
   }
-  executors{
+  feeTransferDatas{
     id
-    executors
+    recipient
+    from
+    tokens
+    amount
+    transactionDetail{
+      id
+      blockNumber
+      timeStamp
+      transactionHash
+      transactionLogIndex
+      logIndex
+    }
+  }
+  updateMinHfDatas{
+    id
+    oldMinHf
+    newMinHf
+    transactionDetail{
+      id
+      blockNumber
+      timeStamp
+      transactionHash
+      transactionLogIndex
+      logIndex
+    }
+  }
+  updateBufferHfDatas{
+    id
+    oldBuffer
+    newBuffer
+    transactionDetail{
+      id
+      blockNumber
+      timeStamp
+      transactionHash
+      transactionLogIndex
+      logIndex
+    }
+  }
+  updateAutomationFeeDatas{
+    id
+    oldAutomationFee
+    newAutomationFee
+    transactionDetail{
+      id
+      blockNumber
+      timeStamp
+      transactionHash
+      transactionLogIndex
+      logIndex
+    }
+  }
+  changedOwners{
+    id
+    oldOwner
+    newOwner
+    transactionDetail{
+      id
+      blockNumber
+      timeStamp
+      transactionHash
+      transactionLogIndex
+      logIndex
+    }
+  }
+  systemCallDatas{
+    id
+    sender
+    actionId
+    metaData
+    transactionDetail{
+      id
+      blockNumber
+      timeStamp
+      transactionHash
+      transactionLogIndex
+      logIndex
+    }
   }
 }
-
 </pre>
