@@ -178,5 +178,9 @@ Query Structure
       logIndex
     }
   }
+  executors{
+   id
+   executors
+  }
 }
 </pre>
