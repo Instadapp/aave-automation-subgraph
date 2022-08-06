@@ -25,11 +25,20 @@ type Spell @entity {
   _datas: [Bytes!]!
 }
 
+type TransactionData @entity {
+  id: ID!
+  blockNumber: BigInt!
+  timeStamp: BigInt!
+  logIndex: BigInt!
+  transactionHash: Bytes!
+  transactionLogIndex: BigInt!
+}
+
 type Account @entity {
   id: ID!
+  user: Bytes!
   submitAutomation: [SubmitData!]! @derivedFrom (field: "account")
   executeAutomation: [ExecuteData!]! @derivedFrom (field: "account")
-  executeMetaData: [ExecuteMetaData!]! @derivedFrom (field: "account")
   cancelData: [CancelData!]! @derivedFrom (field: "account")
   systemCancelData: [SystemCancelData!]! @derivedFrom (field: "account")
 }
@@ -42,6 +51,7 @@ type SubmitData @entity {
   thresholdHF: BigInt!
   currentHf: BigInt!
   account: Account!
+  transactionDetail: TransactionData! 
 }
 
 type ExecuteData @entity {
@@ -53,18 +63,10 @@ type ExecuteData @entity {
   initialHf: BigInt!
   automationFee: Int!
   params: ExecutionParams!
-  spells: Spell!
-  account: Account!
-}
-
-type ExecuteMetaData @entity {
-  id: ID!
-  user: Bytes!
-  userId: BigInt!
-  nonce: BigInt!
   isSafe: Boolean!
-  metadata: Bytes!
+  metaData: Bytes!
   account: Account!
+  transactionDetail: TransactionData!
 }
 
 type CancelData @entity {
@@ -73,6 +75,7 @@ type CancelData @entity {
   userId: BigInt!
   nonce: BigInt!
   account: Account!
+  transactionDetail: TransactionData! 
 }
 
 type SystemCancelData @entity {
@@ -82,6 +85,52 @@ type SystemCancelData @entity {
   nonce: BigInt!
   errorCode: Int!
   account: Account!
+  transactionDetail: TransactionData! 
+}
+
+type ChangedOwner @entity {
+  id: ID!
+  oldOwner: Bytes!
+  newOwner: Bytes!
+  transactionDetail: TransactionData! 
+}
+
+type FeeTransferData @entity {
+  id: ID!
+  recipient: Bytes!
+  tokens: [Bytes!]!
+  amount: [BigInt!]!
+  from: Bytes!
+  transactionDetail: TransactionData! 
+}
+
+type SystemCallData @entity {
+  id: ID!
+  sender: Bytes!
+  actionId: String!
+  metaData: Bytes!
+  transactionDetail: TransactionData! 
+}
+
+type UpdateAutomationFeeData @entity {
+  id: ID!
+  oldAutomationFee: Int!
+  newAutomationFee: Int!
+  transactionDetail: TransactionData! 
+}
+
+type UpdateBufferHfData @entity {
+  id: ID!
+  oldBuffer: BigInt!
+  newBuffer: BigInt!
+  transactionDetail: TransactionData!
+}
+
+type UpdateMinHfData @entity {
+  id: ID!
+  oldMinHf: BigInt!
+  newMinHf: BigInt!
+  transactionDetail: TransactionData! 
 }
 
 type Executor @entity {
