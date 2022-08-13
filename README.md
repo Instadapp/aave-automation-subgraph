@@ -6,6 +6,7 @@ Subgraph deployment:
 
 - Polygon: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-polygon?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-polygon?selected=playground)
 - Avalanche: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-avalanche?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-avalanche?selected=playground)
+- Mainnet [Staging]: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-staging-mainnet?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-staging-mainnet?selected=playground)
 
 Query Structure
 
