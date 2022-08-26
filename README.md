@@ -82,6 +82,43 @@ Query Structure
         logIndex
       }
     }
+    failedExecutionData{
+      id
+      user
+      account{
+        id
+      }
+      userId
+      nonce
+      params{
+        id
+        collateralToken
+        collateralAmount
+        debtToken
+        debtAmount
+        collateralAmountWithTotalFee
+        swap{
+          id
+          sellToken
+          buyToken
+          sellAmt
+          unitAmt
+          callData
+        }
+        route
+        rateMode
+      }
+      metadata
+      initialHf
+      transactionDetail{
+        id
+        blockNumber
+        timeStamp
+        transactionHash
+        transactionLogIndex
+        logIndex
+      }
+    }
     systemCancelData{
       id
       user
