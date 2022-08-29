@@ -6,6 +6,7 @@ Subgraph deployment:
 
 - Polygon: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-polygon?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-polygon?selected=playground)
 - Avalanche: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-avalanche?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-avalanche?selected=playground)
+- Mainnet [Staging]: [https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-staging-mainnet?selected=playground](https://thegraph.com/hosted-service/subgraph/richa-iitr/aave-automation-staging-mainnet?selected=playground)
 
 Query Structure
 
@@ -72,6 +73,43 @@ Query Structure
       user
       userId
       nonce
+      transactionDetail{
+        id
+        blockNumber
+        timeStamp
+        transactionHash
+        transactionLogIndex
+        logIndex
+      }
+    }
+    failedExecutionData{
+      id
+      user
+      account{
+        id
+      }
+      userId
+      nonce
+      params{
+        id
+        collateralToken
+        collateralAmount
+        debtToken
+        debtAmount
+        collateralAmountWithTotalFee
+        swap{
+          id
+          sellToken
+          buyToken
+          sellAmt
+          unitAmt
+          callData
+        }
+        route
+        rateMode
+      }
+      metadata
+      initialHf
       transactionDetail{
         id
         blockNumber
