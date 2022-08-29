@@ -394,6 +394,15 @@ export class Account extends Entity {
   set systemCancelData(value: Array<string>) {
     this.set("systemCancelData", Value.fromStringArray(value));
   }
+
+  get failedExecutionData(): Array<string> {
+    let value = this.get("failedExecutionData");
+    return value!.toStringArray();
+  }
+
+  set failedExecutionData(value: Array<string>) {
+    this.set("failedExecutionData", Value.fromStringArray(value));
+  }
 }
 
 export class SubmitData extends Entity {
@@ -1213,5 +1222,109 @@ export class Executor extends Entity {
 
   set executors(value: Array<Bytes>) {
     this.set("executors", Value.fromBytesArray(value));
+  }
+}
+
+export class FailedExecution extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save FailedExecution entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type FailedExecution must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("FailedExecution", id.toString(), this);
+    }
+  }
+
+  static load(id: string): FailedExecution | null {
+    return changetype<FailedExecution | null>(store.get("FailedExecution", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get user(): Bytes {
+    let value = this.get("user");
+    return value!.toBytes();
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get account(): string {
+    let value = this.get("account");
+    return value!.toString();
+  }
+
+  set account(value: string) {
+    this.set("account", Value.fromString(value));
+  }
+
+  get userId(): BigInt {
+    let value = this.get("userId");
+    return value!.toBigInt();
+  }
+
+  set userId(value: BigInt) {
+    this.set("userId", Value.fromBigInt(value));
+  }
+
+  get nonce(): BigInt {
+    let value = this.get("nonce");
+    return value!.toBigInt();
+  }
+
+  set nonce(value: BigInt) {
+    this.set("nonce", Value.fromBigInt(value));
+  }
+
+  get params(): string {
+    let value = this.get("params");
+    return value!.toString();
+  }
+
+  set params(value: string) {
+    this.set("params", Value.fromString(value));
+  }
+
+  get metadata(): Bytes {
+    let value = this.get("metadata");
+    return value!.toBytes();
+  }
+
+  set metadata(value: Bytes) {
+    this.set("metadata", Value.fromBytes(value));
+  }
+
+  get initialHf(): BigInt {
+    let value = this.get("initialHf");
+    return value!.toBigInt();
+  }
+
+  set initialHf(value: BigInt) {
+    this.set("initialHf", Value.fromBigInt(value));
+  }
+
+  get transactionDetail(): string {
+    let value = this.get("transactionDetail");
+    return value!.toString();
+  }
+
+  set transactionDetail(value: string) {
+    this.set("transactionDetail", Value.fromString(value));
   }
 }

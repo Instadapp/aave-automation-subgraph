@@ -4,7 +4,7 @@ import {
   Bytes,
   DataSourceContext,
 } from "@graphprotocol/graph-ts";
-import { Account, ExecutionParams, SubmitData, Swap, Spell, ExecuteData, CancelData, SystemCancelData, TransactionData, ChangedOwner, FeeTransferData, SystemCallData, UpdateAutomationFeeData, UpdateBufferHfData, UpdateMinHfData } from "../generated/schema";
+import { Account, ExecutionParams, SubmitData, Swap, Spell, ExecuteData, CancelData, SystemCancelData, TransactionData, ChangedOwner, FeeTransferData, SystemCallData, UpdateAutomationFeeData, UpdateBufferHfData, UpdateMinHfData, FailedExecution } from "../generated/schema";
 import { InstaAutomation } from "../generated/InstaAutomation/InstaAutomation";
 import { InstaAutomation as InstaAutomationABI } from "../generated/templates";
 
@@ -103,6 +103,21 @@ export function createOrLoadExecute(id: string): ExecuteData {
     data.transactionDetail = createOrLoadTransaction(id).id;
     data.isSafe = false;
     data.metaData = new Bytes(0);
+  }
+  return data;
+}
+
+export function createOrLoadFailedExecution(id: string): FailedExecution {
+  let data = FailedExecution.load(id);
+  if(data == null) {
+    data = new FailedExecution(id);
+    data.user = ADDR_ZERO;
+    data.userId = ZERO;
+    data.nonce = ZERO;
+    data.initialHf = ZERO;
+    data.params = createOrLoadExecutionParams(id).id;
+    data.transactionDetail = createOrLoadTransaction(id).id;
+    data.metadata = new Bytes(0);
   }
   return data;
 }

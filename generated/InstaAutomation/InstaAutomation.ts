@@ -166,6 +166,104 @@ export class LogExecutedAutomationParamsSwapStruct extends ethereum.Tuple {
   }
 }
 
+export class LogExecutionFailedAutomation extends ethereum.Event {
+  get params(): LogExecutionFailedAutomation__Params {
+    return new LogExecutionFailedAutomation__Params(this);
+  }
+}
+
+export class LogExecutionFailedAutomation__Params {
+  _event: LogExecutionFailedAutomation;
+
+  constructor(event: LogExecutionFailedAutomation) {
+    this._event = event;
+  }
+
+  get user(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get nonce(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get params(): LogExecutionFailedAutomationParamsStruct {
+    return changetype<LogExecutionFailedAutomationParamsStruct>(
+      this._event.parameters[3].value.toTuple()
+    );
+  }
+
+  get metadata(): Bytes {
+    return this._event.parameters[4].value.toBytes();
+  }
+
+  get initialHf(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
+  }
+}
+
+export class LogExecutionFailedAutomationParamsStruct extends ethereum.Tuple {
+  get collateralToken(): Address {
+    return this[0].toAddress();
+  }
+
+  get debtToken(): Address {
+    return this[1].toAddress();
+  }
+
+  get collateralAmount(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get debtAmount(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get collateralAmountWithTotalFee(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get swap(): LogExecutionFailedAutomationParamsSwapStruct {
+    return changetype<LogExecutionFailedAutomationParamsSwapStruct>(
+      this[5].toTuple()
+    );
+  }
+
+  get route(): BigInt {
+    return this[6].toBigInt();
+  }
+
+  get rateMode(): BigInt {
+    return this[7].toBigInt();
+  }
+}
+
+export class LogExecutionFailedAutomationParamsSwapStruct extends ethereum.Tuple {
+  get buyToken(): Address {
+    return this[0].toAddress();
+  }
+
+  get sellToken(): Address {
+    return this[1].toAddress();
+  }
+
+  get sellAmt(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get unitAmt(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get callData(): Bytes {
+    return this[4].toBytes();
+  }
+}
+
 export class LogFeeTransferred extends ethereum.Event {
   get params(): LogFeeTransferred__Params {
     return new LogFeeTransferred__Params(this);

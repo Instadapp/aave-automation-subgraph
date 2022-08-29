@@ -175,6 +175,102 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint32",
+        "name": "id",
+        "type": "uint32"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint32",
+        "name": "nonce",
+        "type": "uint32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "collateralToken",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "debtToken", "type": "address" },
+          {
+            "internalType": "uint256",
+            "name": "collateralAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "debtAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateralAmountWithTotalFee",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "buyToken",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "sellToken",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "sellAmt",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "unitAmt",
+                "type": "uint256"
+              },
+              { "internalType": "bytes", "name": "callData", "type": "bytes" }
+            ],
+            "internalType": "struct Structs.Swap",
+            "name": "swap",
+            "type": "tuple"
+          },
+          { "internalType": "uint256", "name": "route", "type": "uint256" },
+          { "internalType": "uint256", "name": "rateMode", "type": "uint256" }
+        ],
+        "indexed": false,
+        "internalType": "struct Structs.ExecutionParams",
+        "name": "params",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "metadata",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "initialHf",
+        "type": "uint128"
+      }
+    ],
+    "name": "LogExecutionFailedAutomation",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "recipient",
         "type": "address"
       },

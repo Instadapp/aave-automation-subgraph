@@ -10,5 +10,11 @@
       "address": "0x08c1c01be430C9381AD2794412C3E940254CD97c",
       "startBlock": 18160000
     }
+  },
+  "mainnet": {
+    "InstaAutomation": {
+      "address": "0x08c1c01be430C9381AD2794412C3E940254CD97c",
+      "startBlock": 15435700
+    }
   }
 }

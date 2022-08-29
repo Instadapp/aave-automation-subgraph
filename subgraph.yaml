@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: InstaAutomation
-    network: matic
+    network: mainnet
     source:
       abi: InstaAutomation
-      address: "0x3cF499Dbd2aBB6505f48Db27a9871523A38e6e2C"
-      startBlock: 31471200
+      address: "0x08c1c01be430C9381AD2794412C3E940254CD97c"
+      startBlock: 15435700
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -30,6 +30,7 @@ dataSources:
         - UpdateAutomationFeeData
         - UpdateBufferHfData
         - UpdateMinHfData
+        - FailedExecution
       eventHandlers:
         - event: LogCancelledAutomation(indexed address,indexed uint32,indexed uint32)
           handler: handleLogCancelAutomation
@@ -56,4 +57,7 @@ dataSources:
           handler: handleLogSubmitAutomation
         - event: LogChangedOwner(indexed address,indexed address)
           handler: handleLogChangedOwner
+        - event: LogExecutionFailedAutomation(indexed address,indexed uint32,indexed
+            uint32,(address,address,uint256,uint256,uint256,(address,address,uint256,uint256,bytes),uint256,uint256),bytes,uint128)
+          handler: handleLogFailedExecution
       file: ./src/insta-automation.ts

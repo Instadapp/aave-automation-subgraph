@@ -10,6 +10,7 @@ import {
   LogCancelledAutomation,
   LogChangedOwner,
   LogExecutedAutomation,
+  LogExecutionFailedAutomation,
   LogFeeTransferred,
   LogFlippedExecutors,
   LogSubmittedAutomation,
@@ -36,6 +37,7 @@ import {
   createOrLoadDsa,
   createOrLoadExecute,
   createOrLoadExecutionParams,
+  createOrLoadFailedExecution,
   createOrLoadFeeTransferData,
   createOrLoadSubmit,
   createOrLoadSwap,
@@ -108,7 +110,7 @@ export function handleLogCancelAutomation(event: LogCancelledAutomation): void {
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   cancelData.transactionDetail = transaction.id;
-  
+
   transaction.save();
   cancelData.save();
   dsa.save();
@@ -144,15 +146,13 @@ export function handleSystemCancelledAutomation(
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   cancelData.transactionDetail = transaction.id;
-  
+
   transaction.save();
   cancelData.save();
   dsa.save();
 }
 
-export function handleLogExecuteAutomation(
-  event: LogExecutedAutomation
-): void {
+export function handleLogExecuteAutomation(event: LogExecutedAutomation): void {
   let dsaId =
     event.params.user.toHexString() + "#" + event.params.id.toString();
   let eventId =
@@ -199,7 +199,7 @@ export function handleLogExecuteAutomation(
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   executeData.transactionDetail = transaction.id;
-  
+
   transaction.save();
   params.save();
   swaps.save();
@@ -221,10 +221,10 @@ export function handleLogChangedOwner(event: LogChangedOwner): void {
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   changeOwnerData.transactionDetail = transaction.id;
-  
+
   transaction.save();
   changeOwnerData.save();
-} 
+}
 
 export function handleLogFeeTransferred(event: LogFeeTransferred): void {
   let eventId =
@@ -238,7 +238,7 @@ export function handleLogFeeTransferred(event: LogFeeTransferred): void {
   let dataTokens = data.tokens;
   let dataAmounts = data.amount;
 
-  for(let i = 0; i<tokens.length; i++) {
+  for (let i = 0; i < tokens.length; i++) {
     dataTokens.push(tokens[i]);
     dataAmounts.push(amounts[i]);
   }
@@ -252,10 +252,10 @@ export function handleLogFeeTransferred(event: LogFeeTransferred): void {
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   data.transactionDetail = transaction.id;
-  
+
   transaction.save();
   data.save();
-} 
+}
 
 export function handleLogSystemCall(event: LogSystemCall): void {
   let eventId =
@@ -272,12 +272,14 @@ export function handleLogSystemCall(event: LogSystemCall): void {
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   data.transactionDetail = transaction.id;
-  
+
   transaction.save();
   data.save();
-} 
+}
 
-export function handleLogUpdateAutomationFee(event: LogUpdatedAutomationFee): void {
+export function handleLogUpdateAutomationFee(
+  event: LogUpdatedAutomationFee
+): void {
   let eventId =
     event.transaction.hash.toHexString() + event.logIndex.toString();
 
@@ -291,10 +293,10 @@ export function handleLogUpdateAutomationFee(event: LogUpdatedAutomationFee): vo
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   data.transactionDetail = transaction.id;
-  
+
   transaction.save();
   data.save();
-} 
+}
 
 export function handleUpdatedBufferHf(event: LogUpdatedBufferHf): void {
   let eventId =
@@ -310,7 +312,7 @@ export function handleUpdatedBufferHf(event: LogUpdatedBufferHf): void {
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   data.transactionDetail = transaction.id;
-  
+
   transaction.save();
   data.save();
 }
@@ -329,7 +331,7 @@ export function handleLogUpdatedMinHf(event: LogUpdatedMinHf): void {
   transaction.transactionHash = event.transaction.hash;
   transaction.transactionLogIndex = event.transactionLogIndex;
   data.transactionDetail = transaction.id;
-  
+
   transaction.save();
   data.save();
 }
@@ -357,4 +359,58 @@ export function handleExecutors(event: LogFlippedExecutors): void {
   }
   executors_.executors = execArr;
   executors_.save();
+}
+
+export function handleLogFailedExecution(
+  event: LogExecutionFailedAutomation
+): void {
+  let dsaId =
+    event.params.user.toHexString() + "#" + event.params.id.toString();
+  let eventId =
+    event.transaction.hash.toHexString() + event.logIndex.toString();
+
+  log.info("transaction hash: {} and from: {} ", [
+    event.transaction.hash.toHexString(),
+    event.transaction.from.toHexString(),
+  ]);
+  log.info("ID: {}", [dsaId]);
+
+  let dsa = createOrLoadDsa(dsaId);
+  dsa.user = event.params.user;
+  let failedExecuteData = createOrLoadFailedExecution(eventId);
+  let params = createOrLoadExecutionParams(eventId);
+
+  failedExecuteData.user = event.params.user;
+  failedExecuteData.userId = event.params.id;
+  failedExecuteData.nonce = event.params.nonce;
+  failedExecuteData.initialHf = event.params.initialHf;
+  params.collateralToken = event.params.params.collateralToken;
+  params.debtToken = event.params.params.debtToken;
+  params.collateralAmount = event.params.params.collateralAmount;
+  params.debtAmount = event.params.params.debtAmount;
+  params.collateralAmountWithTotalFee =
+    event.params.params.collateralAmountWithTotalFee;
+  failedExecuteData.metadata = event.params.metadata;
+  let swaps = createOrLoadSwap(eventId);
+  swaps.buyToken = event.params.params.swap.buyToken;
+  swaps.sellToken = event.params.params.swap.sellToken;
+  swaps.sellAmt = event.params.params.swap.sellAmt;
+  swaps.unitAmt = event.params.params.swap.unitAmt;
+  swaps.callData = event.params.params.swap.callData;
+  params.swap = swaps.id;
+  failedExecuteData.params = params.id;
+  failedExecuteData.account = dsaId;
+  let transaction = createOrLoadTransaction(eventId);
+  transaction.blockNumber = event.block.number;
+  transaction.timeStamp = event.block.timestamp;
+  transaction.logIndex = event.logIndex;
+  transaction.transactionHash = event.transaction.hash;
+  transaction.transactionLogIndex = event.transactionLogIndex;
+  failedExecuteData.transactionDetail = transaction.id;
+
+  transaction.save();
+  params.save();
+  swaps.save();
+  failedExecuteData.save();
+  dsa.save();
 }
